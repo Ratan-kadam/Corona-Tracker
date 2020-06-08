@@ -153,7 +153,7 @@ var plotPinsOnMap = function(map, json) {
       .setPopup(new mapboxgl.Popup().setHTML(`<strong>${data[i].location}</strong> <br> Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
 
       if ((data[i].location).toLowerCase() !== "togo" ) {
-          m.addTo(map);
+          m.addTo(map); /* api have wrong location for togo */
       }
 
 
