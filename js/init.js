@@ -12,12 +12,12 @@ import {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-  const myMap = initMaps();
   const myOptions = {
     color: COLORS.RED,
     rotation: 10,
   }
   const myLocationMarker = new mapboxgl.Marker(myOptions)
+  const myMap = initMaps();
   const currentLocationService = new getLocation(myMap, myLocationMarker);
   currentLocationService.drawMyLocation();
   loadMain(myMap)
@@ -48,8 +48,9 @@ var circleLayer = function (myMap, json, maxcount) {
       'circle-radius': ['get', 'percentOfOverallCases'],
       'circle-color': '#8B0000',
       'circle-stroke-color': 'white',
+      'circle-stroke-opacity': 0.5,
       'circle-stroke-width': 0.5,
-      'circle-opacity': 0.1
+      'circle-opacity': 0.5
     }
   })
 }
@@ -146,10 +147,15 @@ var plotPinsOnMap = function(map, json) {
     const options = {
       color: color,
     }
+
     var m = new mapboxgl.Marker(options)
       .setLngLat([data[i].longitude, data[i].latitude])
       .setPopup(new mapboxgl.Popup().setHTML(`<strong>${data[i].location}</strong> <br> Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
-      .addTo(map);
+
+      if ((data[i].location).toLowerCase() !== "togo" ) {
+          m.addTo(map);
+      }
+
 
       (function (marketElement) {
         marketElement.getElement().addEventListener('mouseenter', () => {
