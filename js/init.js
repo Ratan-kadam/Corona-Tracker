@@ -20,40 +20,62 @@ document.addEventListener("DOMContentLoaded", function() {
   const myLocationMarker = new mapboxgl.Marker(myOptions)
   const currentLocationService = new getLocation(myMap, myLocationMarker);
   currentLocationService.drawMyLocation();
+  loadMain(myMap)
 
-  FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
-    .then(json => {
-      var geoLayerData = createLayerGeoData(json);
-      myMap.addSource('places', {
-        type: 'geojson',
-        data: geoLayerData
-      })
-
-      myMap.addLayer({
-        id: 'places',
-        type: 'circle',
-        source: 'places',
-        paint: {
-          'circle-radius': 10,
-          'circle-color': '#8B0000',
-          'circle-stroke-color': 'white',
-          'circle-stroke-width': 4,
-          'circle-opacity': 1
-        }
-      })
-
-      var popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false
-      });
-      plotPinsOnMap(myMap, json);
-    })
 });
 
-var createLayerGeoData = function(json) {
+var loadMain = function (myMap) {
+  FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
+    .then(json => {
+      const maxCasesCount = plotPinsOnMap(myMap, json);
+      circleLayer(myMap, json, maxCasesCount);
+      // circleLayerPopup(myMap);
+    })
+}
+
+var circleLayer = function (myMap, json, maxcount) {
+  var geoLayerData = createLayerGeoData(json, maxcount);
+  myMap.addSource('places', {
+    type: 'geojson',
+    data: geoLayerData
+  })
+
+  myMap.addLayer({
+    id: 'places',
+    type: 'circle',
+    source: 'places',
+    paint: {
+      'circle-radius': ['get', 'percentOfOverallCases'],
+      'circle-color': '#8B0000',
+      'circle-stroke-color': 'white',
+      'circle-stroke-width': 0.5,
+      'circle-opacity': 0.1
+    }
+  })
+}
+
+var getColor = function (count, maxcount) {
+  const percentage = ((count/maxcount) * 100);
+  let color;
+  if (percentage > 50) {
+    color = '#bb2124'; // red
+  } else if (percentage < 50 && percentage > 10) {
+    color = '#f0ad4e' // yellow
+  } else if (percentage < 10 && percentage > 1){
+    color = '#8fcadd' //
+  } else {
+    color = '#434343'
+  }
+
+  return { color, percentage};
+}
+
+var createLayerGeoData = function(json, maxcount) {
   const {
     data
   } = json || {};
+
+  let maxPercent = 0;
 
   var obj = {};
   obj.type = 'geojson';
@@ -64,12 +86,20 @@ var createLayerGeoData = function(json) {
   for (var i = 0; i < data.length; i++) {
     var currentDataObj = data[i];
 
+    const percentOfCases =  (data[i].confirmed/maxcount) * 100;
+
+    if ( maxPercent < percentOfCases ) {
+      maxPercent = percentOfCases;
+    }
+
+
     var dataObj = {};
 
     dataObj.type = 'Feature';
     dataObj.properties = {};
     dataObj.properties.description = 'sample';
     dataObj.properties.icon = 'theatre';
+    dataObj.properties.percentOfOverallCases = percentOfCases/2; // max radius 50
 
     dataObj.geometry = {};
     dataObj.geometry.type = 'Point';
@@ -103,16 +133,24 @@ var plotPinsOnMap = function(map, json) {
   const {
     data
   } = json || {};
+  let maxcount = 0;
+
   for (var i = 0; i < data.length; i++) {
-    var m = new mapboxgl.Marker()
-      .setLngLat([data[i].longitude, data[i].latitude])
-      .setPopup(new mapboxgl.Popup().setHTML(`Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
-      .addTo(map);
-    markersHtml.push(m);
+    if (data[i].confirmed > maxcount) {
+      maxcount = data[i].confirmed;
+    }
   }
 
-    for (var i = 0; i < data.length; i++) {
-      var marketElement = markersHtml[i];
+  for (var i = 0; i < data.length; i++) {
+    const { color, percentage } = getColor(data[i].confirmed, maxcount);
+    const options = {
+      color: color,
+    }
+    var m = new mapboxgl.Marker(options)
+      .setLngLat([data[i].longitude, data[i].latitude])
+      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${data[i].location}</strong> <br> Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
+      .addTo(map);
+
       (function (marketElement) {
         marketElement.getElement().addEventListener('mouseenter', () => {
             marketElement.togglePopup()
@@ -121,8 +159,9 @@ var plotPinsOnMap = function(map, json) {
           marketElement.getElement().addEventListener('mouseleave', () => {
               marketElement.togglePopup()
             })
-        })(marketElement);
-    }
+        })(m);
+  }
+    return maxcount;
   }
 
 var getLocation = function(myMap, myLocationMarker) {
@@ -153,7 +192,8 @@ var getLocation = function(myMap, myLocationMarker) {
   }
 }
 
-function openPopupOnClick(myMap) {
+function circleLayerPopup(myMap) {
+  var popup = new mapboxgl.Popup();
   myMap.on('mouseenter', 'places', function(e) {
     myMap.getCanvas().style.cursor = 'pointer';
 
@@ -174,5 +214,4 @@ function openPopupOnClick(myMap) {
     myMap.getCanvas().style.cursor = '';
     popup.remove();
   });
-  plotPinsOnMap(myMap, json);
 }
