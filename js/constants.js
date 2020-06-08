@@ -7,3 +7,5 @@ export const API = {
 export const COLORS = {
   RED: '#8B0000',
 }
+
+export const markersHtml = [];

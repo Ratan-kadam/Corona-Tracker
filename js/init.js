@@ -3,7 +3,8 @@ import {
 } from './utils.js';
 import {
   API,
-  COLORS
+  COLORS,
+  markersHtml,
 } from './constants.js';
 import {
   store
@@ -44,28 +45,6 @@ document.addEventListener("DOMContentLoaded", function() {
       var popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false
-      });
-
-      myMap.on('mouseenter', 'places', function(e) {
-        // Change the cursor style as a UI indicator.
-        myMap.getCanvas().style.cursor = 'pointer';
-
-        var coordinates = e.features[0].geometry.coordinates.slice();
-        var description = e.features[0].properties.description;
-
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-
-        popup
-          .setLngLat(coordinates)
-          .setHTML(description)
-          .addTo(myMap);
-      });
-
-      myMap.on('mouseleave', 'places', function() {
-        myMap.getCanvas().style.cursor = '';
-        popup.remove();
       });
       plotPinsOnMap(myMap, json);
     })
@@ -127,10 +106,24 @@ var plotPinsOnMap = function(map, json) {
   for (var i = 0; i < data.length; i++) {
     var m = new mapboxgl.Marker()
       .setLngLat([data[i].longitude, data[i].latitude])
-      .setPopup(new mapboxgl.Popup().setHTML("<h1>Hello World!</h1>"))
+      .setPopup(new mapboxgl.Popup().setHTML(`Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
       .addTo(map);
+    markersHtml.push(m);
   }
-}
+
+    for (var i = 0; i < data.length; i++) {
+      var marketElement = markersHtml[i];
+      (function (marketElement) {
+        marketElement.getElement().addEventListener('mouseenter', () => {
+            marketElement.togglePopup()
+          })
+
+          marketElement.getElement().addEventListener('mouseleave', () => {
+              marketElement.togglePopup()
+            })
+        })(marketElement);
+    }
+  }
 
 var getLocation = function(myMap, myLocationMarker) {
   var options = {
@@ -158,4 +151,28 @@ var getLocation = function(myMap, myLocationMarker) {
   return {
     drawMyLocation,
   }
+}
+
+function openPopupOnClick(myMap) {
+  myMap.on('mouseenter', 'places', function(e) {
+    myMap.getCanvas().style.cursor = 'pointer';
+
+    var coordinates = e.features[0].geometry.coordinates.slice();
+    var description = e.features[0].properties.description;
+
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    popup
+      .setLngLat(coordinates)
+      .setHTML(description)
+      .addTo(myMap);
+  });
+
+  myMap.on('mouseleave', 'places', function() {
+    myMap.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+  plotPinsOnMap(myMap, json);
 }
