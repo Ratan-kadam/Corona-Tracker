@@ -7,3 +7,39 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+.tooltip-red {
+ background-color: #ff9d9d;
+}
+
+.tooltip-orange {
+ background-color: #ff9d9d;
+}
+
+.tooltip-green {
+ background-color: #002f00;
+ color: white;
+ opacity: 0.8;
+}
+
+.tooltip-yellow {
+ background-color: #886308;
+ color: white;
+}
+
+.mapboxgl-popup-content {
+  padding: 2px !important;
+  margin-left: 10px;
+  margin: 0;
+  font-size: 12px;
+  border-radius: 20px;
+
+}
+
+.push-5 {
+  margin-right: 5px;
+}
+
+.push-5-l {
+  margin-left: 5px;
+}

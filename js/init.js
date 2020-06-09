@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function() {
 var loadMain = function (myMap) {
   FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
     .then(json => {
-      const maxCasesCount = plotPinsOnMap(myMap, json);
-      circleLayer(myMap, json, maxCasesCount);
+      const { maxcount, totalCount } = plotPinsOnMap(myMap, json);
+      circleLayer(myMap, json, maxcount);
       // circleLayerPopup(myMap);
     })
 }
@@ -46,29 +46,33 @@ var circleLayer = function (myMap, json, maxcount) {
     source: 'places',
     paint: {
       'circle-radius': ['get', 'percentOfOverallCases'],
-      'circle-color': '#8B0000',
-      'circle-stroke-color': 'white',
-      'circle-stroke-opacity': 0.5,
-      'circle-stroke-width': 0.5,
-      'circle-opacity': 0.5
+      'circle-color': '#701d07',
+      'circle-stroke-color': '#886308',
+      'circle-stroke-opacity': 0.2,
+      'circle-stroke-width': 0.1,
+      'circle-opacity': 0.2
     }
   })
 }
 
 var getColor = function (count, maxcount) {
   const percentage = ((count/maxcount) * 100);
-  let color;
+  let color, colorName;
   if (percentage > 50) {
-    color = '#bb2124'; // red
+    color = '#701d07' ; // red
+    colorName = 'red';
   } else if (percentage < 50 && percentage > 10) {
-    color = '#f0ad4e' // yellow
+    color = '#bb2124' // ornage
+    colorName = 'orange';
   } else if (percentage < 10 && percentage > 1){
-    color = '#8fcadd' //
+    color = '#886308' //'yellow'
+    colorName = 'yellow';
   } else {
-    color = '#434343'
+    color = '#001e00' // green
+    colorName = 'green';
   }
 
-  return { color, percentage};
+  return { color, percentage, colorName};
 }
 
 var createLayerGeoData = function(json, maxcount) {
@@ -135,22 +139,24 @@ var plotPinsOnMap = function(map, json) {
     data
   } = json || {};
   let maxcount = 0;
+  let totalCount = 0;
 
   for (var i = 0; i < data.length; i++) {
     if (data[i].confirmed > maxcount) {
       maxcount = data[i].confirmed;
+      totalCount = totalCount + data[i].confirmed;
     }
   }
 
   for (var i = 0; i < data.length; i++) {
-    const { color, percentage } = getColor(data[i].confirmed, maxcount);
+    const { color, percentage, colorName } = getColor(data[i].confirmed, totalCount);
     const options = {
       color: color,
     }
 
     var m = new mapboxgl.Marker(options)
       .setLngLat([data[i].longitude, data[i].latitude])
-      .setPopup(new mapboxgl.Popup().setHTML(`<strong>${data[i].location}</strong> <br> Confirmed: ${data[i].confirmed} <br> Deaths: ${data[i].dead} <br> Recovered: ${data[i].recovered}`))
+      .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % </span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
 
       if ((data[i].location).toLowerCase() !== "togo" ) {
           m.addTo(map); /* api have wrong location for togo */
@@ -167,7 +173,7 @@ var plotPinsOnMap = function(map, json) {
             })
         })(m);
   }
-    return maxcount;
+    return { maxcount, totalCount };
   }
 
 var getLocation = function(myMap, myLocationMarker) {
