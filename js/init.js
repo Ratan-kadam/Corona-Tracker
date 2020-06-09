@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
   loadMain(myMap);
 
 });
-
 var debounce = function(fn, delay) {
   var timeout;
   return function(args) {
@@ -37,15 +36,15 @@ var debounce = function(fn, delay) {
   }
 }
 
-var searchMyLocationOnMap = function(targetLocation, map) {
+var searchMyLocationOnMap = function(targetLocation, map, marker) {
 
   map.flyTo({
     center: targetLocation,
     zoom: 5,
     bearing: 0,
 
-    speed: 0.7, // make the flying slow
-    curve: 1, // change the speed at which it zooms out
+    speed: 0.7,
+    curve: 1,
 
     easing: function(t) {
       return t;
@@ -53,14 +52,21 @@ var searchMyLocationOnMap = function(targetLocation, map) {
 
     essential: true
   });
+
+  if (marker) {
+    setTimeout(() => {
+        marker.togglePopup();
+   }, 2000)
+  }
 }
 
 var addEventListeners = function(myMap) {
   const myinput = document.getElementById('input_box');
   myinput.addEventListener('keyup', debounce((e) => {
     const targetLocationArray = store.cordinatesMapping[(e.target.value).toLowerCase()];
+    const markerRetrived = store.pins[(e.target.value).toLowerCase()];
     if (targetLocationArray) {
-       searchMyLocationOnMap(targetLocationArray, myMap);
+       searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
     }
   }, 2000));
 }
@@ -214,6 +220,7 @@ var plotPinsOnMap = function(map, json) {
 
     if ((data[i].location).toLowerCase() !== "togo") {
       m.addTo(map); /* api have wrong location for togo */
+      store.pins[(data[i].location).toLowerCase()] = m;
     }
 
 
@@ -226,6 +233,8 @@ var plotPinsOnMap = function(map, json) {
         marketElement.togglePopup()
       })
     })(m);
+
+    console.log("store", store);
   }
 
   store.cordinatesMapping = cordinatesMapping;
@@ -246,8 +255,9 @@ var getLocation = function(myMap, myLocationMarker) {
   function success(pos) {
     var crd = pos.coords;
     myLocationMarker.setLngLat([crd.longitude, crd.latitude])
-    myMap.setCenter([crd.longitude, crd.latitude]);
+    // myMap.setCenter([crd.longitude, crd.latitude]);
     myLocationMarker.addTo(myMap);
+    searchMyLocationOnMap([crd.longitude, crd.latitude], myMap);
 
   }
 
@@ -255,7 +265,7 @@ var getLocation = function(myMap, myLocationMarker) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   }
 
-  function drawMyLocation() {
+  function drawMyLocation(myMap) {
     return navigator.geolocation.getCurrentPosition(success, error, options);
   }
 
