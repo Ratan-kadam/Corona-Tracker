@@ -43,3 +43,20 @@ body {
 .push-5-l {
   margin-left: 5px;
 }
+
+.my_input {
+  position: absolute;
+  z-index: 1;
+  margin-left: 100px;
+  margin-right: 20px;
+  padding: 20px;
+  width: 300px;
+  height: 5px;
+  border-radius: 20px;
+  background-color: #9a9a9;
+  transition: width 1s ease-in-out;
+}
+.my_input:focus {
+  width: 800px;
+  transition: width 1s ease-in-out;
+}

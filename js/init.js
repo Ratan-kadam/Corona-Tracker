@@ -18,22 +18,66 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   const myLocationMarker = new mapboxgl.Marker(myOptions)
   const myMap = initMaps();
+  addEventListeners(myMap, store.cordinatesMapping);
   const currentLocationService = new getLocation(myMap, myLocationMarker);
   currentLocationService.drawMyLocation();
-  loadMain(myMap)
+  loadMain(myMap);
 
 });
 
-var loadMain = function (myMap) {
+var debounce = function(fn, delay) {
+  var timeout;
+  return function(args) {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(() => {
+      fn(args);
+    }, delay);
+  }
+}
+
+var searchMyLocationOnMap = function(targetLocation, map) {
+
+  map.flyTo({
+    center: targetLocation,
+    zoom: 5,
+    bearing: 0,
+
+    speed: 0.7, // make the flying slow
+    curve: 1, // change the speed at which it zooms out
+
+    easing: function(t) {
+      return t;
+    },
+
+    essential: true
+  });
+}
+
+var addEventListeners = function(myMap) {
+  const myinput = document.getElementById('input_box');
+  myinput.addEventListener('keyup', debounce((e) => {
+    const targetLocationArray = store.cordinatesMapping[(e.target.value).toLowerCase()];
+    if (targetLocationArray) {
+       searchMyLocationOnMap(targetLocationArray, myMap);
+    }
+  }, 2000));
+}
+
+var loadMain = function(myMap) {
   FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
     .then(json => {
-      const { maxcount, totalCount } = plotPinsOnMap(myMap, json);
+      const {
+        maxcount,
+        totalCount,
+        cordinatesMapping
+      } = plotPinsOnMap(myMap, json);
       circleLayer(myMap, json, maxcount);
-      // circleLayerPopup(myMap);
     })
 }
 
-var circleLayer = function (myMap, json, maxcount) {
+var circleLayer = function(myMap, json, maxcount) {
   var geoLayerData = createLayerGeoData(json, maxcount);
   myMap.addSource('places', {
     type: 'geojson',
@@ -55,16 +99,16 @@ var circleLayer = function (myMap, json, maxcount) {
   })
 }
 
-var getColor = function (count, maxcount) {
-  const percentage = ((count/maxcount) * 100);
+var getColor = function(count, maxcount) {
+  const percentage = ((count / maxcount) * 100);
   let color, colorName;
   if (percentage > 50) {
-    color = '#701d07' ; // red
+    color = '#701d07'; // red
     colorName = 'red';
   } else if (percentage < 50 && percentage > 10) {
     color = '#bb2124' // ornage
     colorName = 'orange';
-  } else if (percentage < 10 && percentage > 1){
+  } else if (percentage < 10 && percentage > 1) {
     color = '#886308' //'yellow'
     colorName = 'yellow';
   } else {
@@ -72,7 +116,11 @@ var getColor = function (count, maxcount) {
     colorName = 'green';
   }
 
-  return { color, percentage, colorName};
+  return {
+    color,
+    percentage,
+    colorName
+  };
 }
 
 var createLayerGeoData = function(json, maxcount) {
@@ -91,9 +139,9 @@ var createLayerGeoData = function(json, maxcount) {
   for (var i = 0; i < data.length; i++) {
     var currentDataObj = data[i];
 
-    const percentOfCases =  (data[i].confirmed/maxcount) * 100;
+    const percentOfCases = (data[i].confirmed / maxcount) * 100;
 
-    if ( maxPercent < percentOfCases ) {
+    if (maxPercent < percentOfCases) {
       maxPercent = percentOfCases;
     }
 
@@ -104,7 +152,7 @@ var createLayerGeoData = function(json, maxcount) {
     dataObj.properties = {};
     dataObj.properties.description = 'sample';
     dataObj.properties.icon = 'theatre';
-    dataObj.properties.percentOfOverallCases = percentOfCases/2; // max radius 50
+    dataObj.properties.percentOfOverallCases = percentOfCases / 2; // max radius 50
 
     dataObj.geometry = {};
     dataObj.geometry.type = 'Point';
@@ -140,16 +188,22 @@ var plotPinsOnMap = function(map, json) {
   } = json || {};
   let maxcount = 0;
   let totalCount = 0;
+  const cordinatesMapping = {};
 
   for (var i = 0; i < data.length; i++) {
     if (data[i].confirmed > maxcount) {
       maxcount = data[i].confirmed;
       totalCount = totalCount + data[i].confirmed;
     }
-  }
+    cordinatesMapping[(data[i].location).toLowerCase()] = [data[i].longitude, data[i].latitude];
+    }
 
   for (var i = 0; i < data.length; i++) {
-    const { color, percentage, colorName } = getColor(data[i].confirmed, totalCount);
+    const {
+      color,
+      percentage,
+      colorName
+    } = getColor(data[i].confirmed, totalCount);
     const options = {
       color: color,
     }
@@ -158,23 +212,29 @@ var plotPinsOnMap = function(map, json) {
       .setLngLat([data[i].longitude, data[i].latitude])
       .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % </span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
 
-      if ((data[i].location).toLowerCase() !== "togo" ) {
-          m.addTo(map); /* api have wrong location for togo */
-      }
+    if ((data[i].location).toLowerCase() !== "togo") {
+      m.addTo(map); /* api have wrong location for togo */
+    }
 
 
-      (function (marketElement) {
-        marketElement.getElement().addEventListener('mouseenter', () => {
-            marketElement.togglePopup()
-          })
+    (function(marketElement) {
+      marketElement.getElement().addEventListener('mouseenter', () => {
+        marketElement.togglePopup()
+      })
 
-          marketElement.getElement().addEventListener('mouseleave', () => {
-              marketElement.togglePopup()
-            })
-        })(m);
+      marketElement.getElement().addEventListener('mouseleave', () => {
+        marketElement.togglePopup()
+      })
+    })(m);
   }
-    return { maxcount, totalCount };
-  }
+
+  store.cordinatesMapping = cordinatesMapping;
+
+  return {
+    maxcount,
+    totalCount,
+  };
+}
 
 var getLocation = function(myMap, myLocationMarker) {
   var options = {
