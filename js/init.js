@@ -121,7 +121,7 @@ var createLayerGeoData = function(json, maxcount) {
 
 
 var initMaps = function() {
-  mapboxgl.accessToken = '';
+  mapboxgl.accessToken = 'pk.eyJ1IjoicmF0YW5rYWRhbSIsImEiOiJja2IwNGpjNTAwNTI2MzBwbXZ0azhpeGN1In0.8MUvb6rac9jyNdwwt7064A';
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v10',
