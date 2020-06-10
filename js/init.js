@@ -9,6 +9,9 @@ import {
 import {
   store
 } from './store.js';
+import {
+  USA_STATES_CORDINATES
+} from './static_data/static_data.js';
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -22,8 +25,75 @@ document.addEventListener("DOMContentLoaded", function() {
   const currentLocationService = new getLocation(myMap, myLocationMarker);
   currentLocationService.drawMyLocation();
   loadMain(myMap);
-
+  loadUsaData(myMap);
 });
+
+var loadUsaData = function (myMap) {
+  FetchApisModule().fetchApi(API.USA_DATA, 'usa_states')
+    .then(json => {
+      circleLayerUsa(myMap, json);
+      circleLayerPopup(myMap);
+    })
+}
+
+var circleLayerUsa = function (myMap, json) {
+  var usaGeoLayerData = createUsaCountyGeoData(json);
+  myMap.addSource('usaCounty', {
+    type: 'geojson',
+    data: usaGeoLayerData
+  })
+
+  myMap.addLayer({
+    id: 'usaCounty',
+    type: 'circle',
+    source: 'usaCounty',
+    paint: {
+      'circle-radius': 2,
+      'circle-color': ['get', 'color'],
+      'circle-stroke-color': 'white',
+      'circle-stroke-opacity': 1,
+      'circle-stroke-width': 0.2,
+      'circle-opacity': 1
+    }
+  })
+}
+
+var createUsaCountyGeoData = function (json) {
+  const {
+    message
+  } = json || {};
+  var obj = {};
+  const data = message;
+
+  obj.data = {};
+  obj.data.type = 'FeatureCollection';
+  obj.data.features = [];
+  for (var i = 0; i < data.length; i++) {
+    var currentDataObj = data[i];
+    var dataObj = {};
+
+    dataObj.type = 'Feature';
+    dataObj.properties = {};
+    dataObj.properties.county_name = currentDataObj.county_name;
+    dataObj.properties.state_name = currentDataObj.state_name;
+    dataObj.properties.confirmed = currentDataObj.confirmed;
+    dataObj.properties.death = currentDataObj.death;
+    dataObj.properties.fatality_rate = currentDataObj.fatality_rate;
+    dataObj.properties.color = getColorForStatesCounty(currentDataObj.fatality_rate).colorName;
+
+
+    dataObj.geometry = {};
+    dataObj.geometry.type = 'Point';
+    dataObj.geometry.coordinates = [];
+
+    dataObj.geometry.coordinates.push(currentDataObj.longitude);
+    dataObj.geometry.coordinates.push(currentDataObj.latitude);
+
+    obj.data.features.push(dataObj)
+  }
+  return obj.data;
+}
+
 var debounce = function(fn, delay) {
   var timeout;
   return function(args) {
@@ -36,11 +106,10 @@ var debounce = function(fn, delay) {
   }
 }
 
-var searchMyLocationOnMap = function(targetLocation, map, marker) {
-
+var searchMyLocationOnMap = function(targetLocation, map, marker, zoom) {
   map.flyTo({
     center: targetLocation,
-    zoom: 5,
+    zoom: zoom || 5,
     bearing: 0,
 
     speed: 0.7,
@@ -53,7 +122,7 @@ var searchMyLocationOnMap = function(targetLocation, map, marker) {
     essential: true
   });
 
-  if (marker) {
+  if (marker && marker.togglePopup) {
     setTimeout(() => {
         marker.togglePopup();
    }, 2000)
@@ -216,7 +285,7 @@ var plotPinsOnMap = function(map, json) {
 
     var m = new mapboxgl.Marker(options)
       .setLngLat([data[i].longitude, data[i].latitude])
-      .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % </span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
+      .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % of world wide cases</span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
 
     if ((data[i].location).toLowerCase() !== "togo") {
       m.addTo(map); /* api have wrong location for togo */
@@ -234,7 +303,6 @@ var plotPinsOnMap = function(map, json) {
       })
     })(m);
 
-    console.log("store", store);
   }
 
   store.cordinatesMapping = cordinatesMapping;
@@ -255,10 +323,8 @@ var getLocation = function(myMap, myLocationMarker) {
   function success(pos) {
     var crd = pos.coords;
     myLocationMarker.setLngLat([crd.longitude, crd.latitude])
-    // myMap.setCenter([crd.longitude, crd.latitude]);
     myLocationMarker.addTo(myMap);
-    searchMyLocationOnMap([crd.longitude, crd.latitude], myMap);
-
+    searchMyLocationOnMap([crd.longitude, crd.latitude], myMap, '', 3);
   }
 
   function error(err) {
@@ -274,21 +340,58 @@ var getLocation = function(myMap, myLocationMarker) {
   }
 }
 
+var getColorForStatesCounty = function(fatality) {
+  const fatality_rate = Number(fatality.split('%')[0]);
+  let color, colorName;
+  if (fatality_rate > 7) {
+    color = '#701d07'; // red
+    colorName = 'red';
+  } else if (fatality_rate < 7 && fatality_rate > 3) {
+    color = '#bb2124' // orange
+    colorName = 'orange';
+  } else if (fatality_rate < 3 && fatality_rate > 1) {
+    color = '#886308' //'yellow'
+    colorName = 'yellow';
+  } else {
+    color = '#001e00' // green
+    colorName = 'green';
+  }
+
+  return {
+    color,
+    colorName
+  };
+}
+
 function circleLayerPopup(myMap) {
   var popup = new mapboxgl.Popup();
-  myMap.on('mouseenter', 'places', function(e) {
-    myMap.getCanvas().style.cursor = 'pointer';
+  myMap.on('mouseenter', 'usaCounty', function(e) {
+  myMap.getCanvas().style.cursor = 'pointer';
+
 
     var coordinates = e.features[0].geometry.coordinates.slice();
-    var description = e.features[0].properties.description;
+    var countyName = e.features[0].properties.county_name;
+    var stateName = e.features[0].properties.state_name;
+    var fatality_rate = e.features[0].properties.fatality_rate;
+    var confirmed = e.features[0].properties.confirmed;
+    var death = e.features[0].properties.death;
+
+
 
     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
+    const { colorName } = getColorForStatesCounty(fatality_rate);
+
     popup
       .setLngLat(coordinates)
-      .setHTML(description)
+      .setHTML(`<div class="tooltip-${colorName}"><strong>${stateName}</strong>
+        <br>County: ${countyName}
+        <br>cases: ${confirmed}
+        <br>deaths: ${death}
+        <br>fatality_rate: ${fatality_rate}
+        </div>`)
       .addTo(myMap);
   });
 
