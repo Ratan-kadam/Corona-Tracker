@@ -395,7 +395,7 @@ function circleLayerPopup(myMap) {
       .addTo(myMap);
   });
 
-  myMap.on('mouseleave', 'places', function() {
+  myMap.on('mouseleave', 'usaCounty', function() {
     myMap.getCanvas().style.cursor = '';
     popup.remove();
   });
