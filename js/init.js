@@ -105,8 +105,6 @@ var createIndiaCountyGeoData = function(json, statesCordinates) {
     state
   } = json || {};
 
-  console.log(state);
-
   const stateMapping = {};
 
   for (var i = 0; i < statesCordinates.length; i++) {
@@ -120,7 +118,6 @@ var createIndiaCountyGeoData = function(json, statesCordinates) {
   obj.data = {};
   obj.data.type = 'FeatureCollection';
   obj.data.features = [];
-  console.log("stateMapping:", stateMapping);
   for (var i = 0; i < data.length; i++) {
     var currentDataObj = data[i];
     var geometryObj = stateMapping[currentDataObj.name] || {};
