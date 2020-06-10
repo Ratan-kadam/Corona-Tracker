@@ -3,6 +3,7 @@ export const API = {
   SUMMARY: 'https://api.covid19api.com/summary',
   LIVE_DATA: 'https://www.trackcorona.live/api/countries',
   USA_DATA: 'https://covid19-us-api.herokuapp.com/county',
+  INDIA_DATA: 'http://covid19-india-adhikansh.herokuapp.com/states/'
 }
 
 export const COLORS = {

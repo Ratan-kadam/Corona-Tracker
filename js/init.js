@@ -10,7 +10,7 @@ import {
   store
 } from './store.js';
 import {
-  USA_STATES_CORDINATES
+  INDIA_STATES_CORDINATES
 } from './static_data/static_data.js';
 
 
@@ -26,17 +26,26 @@ document.addEventListener("DOMContentLoaded", function() {
   currentLocationService.drawMyLocation();
   loadMain(myMap);
   loadUsaData(myMap);
+  loadIndiaData(myMap);
 });
 
-var loadUsaData = function (myMap) {
-  FetchApisModule().fetchApi(API.USA_DATA, 'usa_states')
+var loadIndiaData = function(myMap) {
+  FetchApisModule().fetchApi(API.USA_DATA, 'india_states')
     .then(json => {
       circleLayerUsa(myMap, json);
       circleLayerPopup(myMap);
     })
 }
 
-var circleLayerUsa = function (myMap, json) {
+var loadUsaData = function(myMap) {
+  FetchApisModule().fetchApi(API.INDIA_DATA, 'usa_states')
+    .then(json => {
+      circleLayerIndia(myMap, json);
+      circleLayerPopupIndia(myMap);
+    })
+}
+
+var circleLayerUsa = function(myMap, json) {
   var usaGeoLayerData = createUsaCountyGeoData(json);
   myMap.addSource('usaCounty', {
     type: 'geojson',
@@ -58,7 +67,88 @@ var circleLayerUsa = function (myMap, json) {
   })
 }
 
-var createUsaCountyGeoData = function (json) {
+var circleLayerIndia = function(myMap, json) {
+  var indiaGeoLayerData = createIndiaCountyGeoData(json, INDIA_STATES_CORDINATES);
+  myMap.addSource('indiaStates', {
+    type: 'geojson',
+    data: indiaGeoLayerData
+  })
+
+  myMap.addLayer({
+    id: 'indiaStates',
+    type: 'circle',
+    source: 'indiaStates',
+    paint: {
+      'circle-radius': 40,
+      'circle-color': ['get', 'color'],
+      'circle-stroke-color': 'white',
+      'circle-stroke-opacity': 0.5,
+      'circle-stroke-width': 0.2,
+      'circle-opacity': 0.3
+    }
+  })
+
+  myMap.addLayer({
+    id: 'cluster-count',
+    type: 'symbol',
+    source: 'indiaStates',
+    layout: {
+      'text-field': ['get', 'total'],
+      'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+      'text-size': 20
+    }
+  });
+}
+
+var createIndiaCountyGeoData = function(json, statesCordinates) {
+  const {
+    state
+  } = json || {};
+
+  console.log(state);
+
+  const stateMapping = {};
+
+  for (var i = 0; i < statesCordinates.length; i++) {
+    stateMapping[statesCordinates[i].state] = statesCordinates[i];
+  }
+
+  var obj = {};
+
+  const data = state;
+
+  obj.data = {};
+  obj.data.type = 'FeatureCollection';
+  obj.data.features = [];
+  console.log("stateMapping:", stateMapping);
+  for (var i = 0; i < data.length; i++) {
+    var currentDataObj = data[i];
+    var geometryObj = stateMapping[currentDataObj.name] || {};
+    var dataObj = {};
+
+    dataObj.type = 'Feature';
+    dataObj.properties = {};
+    dataObj.properties.name = currentDataObj.name;
+    dataObj.properties.total = currentDataObj.total;
+    dataObj.properties.active = currentDataObj.active;
+    dataObj.properties.cured = currentDataObj.cured;
+    dataObj.properties.death = currentDataObj.death;
+    dataObj.properties.color = getColorForIndiaStates(currentDataObj.total).colorName;
+
+
+    dataObj.geometry = {};
+    dataObj.geometry.type = 'Point';
+    dataObj.geometry.coordinates = [];
+
+    dataObj.geometry.coordinates.push(geometryObj.longitude);
+    dataObj.geometry.coordinates.push(geometryObj.latitude);
+
+    obj.data.features.push(dataObj)
+  }
+  return obj.data;
+}
+
+var createUsaCountyGeoData = function(json) {
   const {
     message
   } = json || {};
@@ -124,8 +214,8 @@ var searchMyLocationOnMap = function(targetLocation, map, marker, zoom) {
 
   if (marker && marker.togglePopup) {
     setTimeout(() => {
-        marker.togglePopup();
-   }, 2000)
+      marker.togglePopup();
+    }, 2000)
   }
 }
 
@@ -135,7 +225,7 @@ var addEventListeners = function(myMap) {
     const targetLocationArray = store.cordinatesMapping[(e.target.value).toLowerCase()];
     const markerRetrived = store.pins[(e.target.value).toLowerCase()];
     if (targetLocationArray) {
-       searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
+      searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
     }
   }, 2000));
 }
@@ -248,6 +338,8 @@ var initMaps = function() {
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v10',
+    pitch: 0,
+    // bearing: -10,
     zoom: 3,
   });
 
@@ -271,7 +363,7 @@ var plotPinsOnMap = function(map, json) {
       totalCount = totalCount + data[i].confirmed;
     }
     cordinatesMapping[(data[i].location).toLowerCase()] = [data[i].longitude, data[i].latitude];
-    }
+  }
 
   for (var i = 0; i < data.length; i++) {
     const {
@@ -363,10 +455,32 @@ var getColorForStatesCounty = function(fatality) {
   };
 }
 
+var getColorForIndiaStates = function(deathCount) {
+  let color, colorName;
+  if (deathCount > 15000) {
+    color = '#701d07'; // red
+    colorName = 'red';
+  } else if (deathCount < 15000 && deathCount > 10000) {
+    color = '#bb2124' // orange
+    colorName = 'orange';
+  } else if (deathCount < 10000 && deathCount > 5000) {
+    color = '#886308' //'yellow'
+    colorName = 'yellow';
+  } else {
+    color = '#001e00' // green
+    colorName = 'green';
+  }
+
+  return {
+    color,
+    colorName
+  };
+}
+
 function circleLayerPopup(myMap) {
   var popup = new mapboxgl.Popup();
   myMap.on('mouseenter', 'usaCounty', function(e) {
-  myMap.getCanvas().style.cursor = 'pointer';
+    myMap.getCanvas().style.cursor = 'pointer';
 
 
     var coordinates = e.features[0].geometry.coordinates.slice();
@@ -382,7 +496,9 @@ function circleLayerPopup(myMap) {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    const { colorName } = getColorForStatesCounty(fatality_rate);
+    const {
+      colorName
+    } = getColorForStatesCounty(fatality_rate);
 
     popup
       .setLngLat(coordinates)
@@ -396,6 +512,43 @@ function circleLayerPopup(myMap) {
   });
 
   myMap.on('mouseleave', 'usaCounty', function() {
+    myMap.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+}
+
+function circleLayerPopupIndia(myMap) {
+  var popup = new mapboxgl.Popup();
+  myMap.on('mouseenter', 'indiaStates', function(e) {
+    myMap.getCanvas().style.cursor = 'pointer';
+
+
+    var coordinates = e.features[0].geometry.coordinates.slice();
+    var stateName = e.features[0].properties.name;
+    var total = e.features[0].properties.total;
+    var confirmed = e.features[0].properties.confirmed;
+    var death = e.features[0].properties.death;
+
+
+
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    const {
+      colorName
+    } = getColorForIndiaStates(total);
+
+    popup
+      .setLngLat(coordinates)
+      .setHTML(`<div class="tooltip-${colorName}"><strong>${stateName}</strong>
+        <br>cases: ${total}
+        <br>deaths: ${death}
+        </div>`)
+      .addTo(myMap);
+  });
+
+  myMap.on('mouseleave', 'indiaStates', function() {
     myMap.getCanvas().style.cursor = '';
     popup.remove();
   });

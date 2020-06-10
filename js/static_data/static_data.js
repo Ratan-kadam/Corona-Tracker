@@ -250,3 +250,143 @@ export const USA_STATES_CORDINATES = [
     "longitude": -107.2085
   }
 ]
+
+export const INDIA_STATES_CORDINATES = [
+ {
+   "state": "Tamil Nadu",
+   "latitude": 11.059821,
+   "longitude": 78.387451,
+ },
+ {
+   "state": "Telangana",
+   "latitude": 17.123184,
+   "longitude": 79.208824,
+   "FIELD4": null
+ },
+ {
+   "state": "Madhya Pradesh",
+   "latitude":  23.473324,
+   "longitude": 77.947998,
+   "FIELD4": null
+ },
+ {
+   "state": "Haryana",
+   "latitude":  29.238478,
+   "longitude": 76.431885,
+   "FIELD4": null
+ },
+ {
+   "state": "Chhattisgarh",
+   "latitude": 21.295132,
+   "longitude": 81.828232,
+   "FIELD4": null
+ },
+ {
+   "state": "Haryana",
+   "latitude": 29.065773,
+   "longitude": 76.040497,
+   "FIELD4": null
+ },
+ {
+   "state": "Madhya Pradesh",
+   "latitude": 25.794033,
+   "longitude": 78.116531,
+   "FIELD4": null
+ },
+ {
+   "state": "Maharashtra",
+   "latitude": 19.601194,
+   "longitude": 75.552979,
+   "FIELD4": null
+ },
+ {
+   "state": "Tripura",
+   "latitude":  23.745127,
+   "longitude": 91.746826,
+   "FIELD4": null
+ },
+ {
+   "state": "Chandoor",
+   "latitude": " Telangana",
+   "longitude": 17.874857,
+   "FIELD4": 78.100815
+ },
+ {
+   "state": "Karnataka",
+   "latitude": 15.317277,
+   "longitude": 75.71389,
+   "FIELD4": null
+ },
+ {
+   "state": "Kerala",
+   "latitude": 10.850516,
+   "longitude": 76.27108,
+   "FIELD4": null
+ },
+ {
+   "state": "Uttar Pradesh",
+   "latitude": 28.207609,
+   "longitude": 79.82666,
+   "FIELD4": null
+ },
+ {
+   "state": "Assam",
+   "latitude": 26.244156,
+   "longitude": 92.537842,
+   "FIELD4": null
+ },
+ {
+   "state": "Maharashtra",
+   "latitude": 19.663280,
+   "longitude": 75.300293,
+   "FIELD4": null
+ },
+ {
+   "state": "Tamil Nadu",
+   "latitude": 11.127123,
+   "longitude": 78.656891,
+   "FIELD4": null
+ },
+ {
+   "state": "Karnataka",
+   "latitude": 15.317277,
+   "longitude": 75.71389,
+   "FIELD4": null
+ },
+ {
+   "state": "West Bengal",
+   "latitude": 22.978624,
+   "longitude": 87.747803,
+   "FIELD4": null
+ },
+ {
+   "state": "Gujarat",
+   "latitude": 22.309425,
+   "longitude": 72.13623,
+   "FIELD4": null
+ },
+ {
+   "state": "Odisha",
+   "latitude": 20.940920,
+   "longitude": 84.803467,
+   "FIELD4": null
+ },
+ {
+   "state": "Rajasthan",
+   "latitude": 27.391277,
+   "longitude": 73.432617,
+   "FIELD4": null
+ },
+ {
+   "state": "Himachal Pradesh",
+   "latitude": 32.084206,
+   "longitude": 77.571167,
+   "FIELD4": null
+ },
+ {
+   "state": "Jammu and Kashmir",
+   "latitude": 34.083656,
+   "longitude": 74.797371,
+   "FIELD4": null
+ }
+]
