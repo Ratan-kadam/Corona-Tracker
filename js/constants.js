@@ -8,6 +8,17 @@ export const API = {
 
 export const COLORS = {
   RED: '#8B0000',
+  ORANGE: '#bb2124',
+  YELLOW: '#886308',
+  GREEN: '#001e00',
+  WHITE: '#f9f9f9'
+}
+
+export const COLORS_CSS_CLASS = {
+  RED: 'red',
+  ORANGE: 'orange',
+  YELLOW: 'yellow',
+  GREEN: 'green'
 }
 
 export const markersHtml = [];

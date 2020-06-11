@@ -9,22 +9,22 @@ body {
 }
 
 .tooltip-red {
- background-color: #ff9d9d;
+  background-color: #ff9d9d;
 }
 
 .tooltip-orange {
- background-color: #ff9d9d;
+  background-color: #ff9d9d;
 }
 
 .tooltip-green {
- background-color: #002f00;
- color: white;
- opacity: 0.8;
+  background-color: #002f00;
+  color: white;
+  opacity: 0.8;
 }
 
 .tooltip-yellow {
- background-color: #886308;
- color: white;
+  background-color: #886308;
+  color: white;
 }
 
 .mapboxgl-popup-content {
@@ -33,7 +33,6 @@ body {
   margin: 0;
   font-size: 12px;
   border-radius: 20px;
-
 }
 
 .push-5 {
@@ -57,6 +56,7 @@ body {
   background-color: #9a9a9;
   transition: width 1s ease-in-out;
 }
+
 .my_input:focus {
   width: 800px;
   transition: width 1s ease-in-out;
