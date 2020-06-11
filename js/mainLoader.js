@@ -94,7 +94,7 @@ var getColor = function(count, maxcount) {
     color = COLORS.YELLOW;
     colorName = COLORS_CSS_CLASS.YELLOW;
   } else {
-    color = COLORS.GREEN;
+    color = COLORS.LIGHT_GREEN;
     colorName = COLORS_CSS_CLASS.GREEN;
   }
 

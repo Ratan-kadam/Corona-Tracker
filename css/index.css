@@ -50,14 +50,16 @@ body {
   margin-right: 20px;
   margin-top: 2px;
   padding: 20px;
-  width: 300px;
+  width: 245px;
   height: 5px;
   border-radius: 20px;
   background-color: #9a9a9;
   transition: width 1s ease-in-out;
+  outline: none;
 }
 
 .my_input:focus {
-  width: 800px;
+  width: 500px;
   transition: width 1s ease-in-out;
+  outline: none;
 }
