@@ -30,7 +30,13 @@ const circleLayerIndia = function(myMap, json) {
     type: 'circle',
     source: 'indiaStates',
     paint: {
-      'circle-radius': 27,
+    'circle-radius': {
+      stops: [
+      [5, 25],
+      [10, 40]
+    ],
+      base: 2
+    },
       'circle-color': ['get', 'color'],
       'circle-stroke-color': 'white',
       'circle-stroke-opacity': 0.5,
