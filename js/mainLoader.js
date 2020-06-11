@@ -1,5 +1,7 @@
 import {
   API,
+  COLORS,
+  COLORS_CSS_CLASS
 } from './constants.js';
 import {
   FetchApisModule,
@@ -83,17 +85,17 @@ var getColor = function(count, maxcount) {
   const percentage = ((count / maxcount) * 100);
   let color, colorName;
   if (percentage > 50) {
-    color = '#701d07'; // red
-    colorName = 'red';
+    color = COLORS.RED;
+    colorName = COLORS_CSS_CLASS.RED;
   } else if (percentage < 50 && percentage > 10) {
-    color = '#bb2124' // ornage
-    colorName = 'orange';
+    color = COLORS.ORANGE;
+    colorName = COLORS_CSS_CLASS.ORANGE;
   } else if (percentage < 10 && percentage > 1) {
-    color = '#886308' //'yellow'
-    colorName = 'yellow';
+    color = COLORS.YELLOW;
+    colorName = COLORS_CSS_CLASS.YELLOW;
   } else {
-    color = '#001e00' // green
-    colorName = 'green';
+    color = COLORS.GREEN;
+    colorName = COLORS_CSS_CLASS.GREEN;
   }
 
   return {
@@ -116,8 +118,8 @@ var circleLayer = function(myMap, json, maxcount) {
     source: 'places',
     paint: {
       'circle-radius': ['get', 'percentOfOverallCases'],
-      'circle-color': '#701d07',
-      'circle-stroke-color': '#886308',
+      'circle-color': COLORS.YELLOW,
+      'circle-stroke-color': COLORS.WHITE,
       'circle-stroke-opacity': 0.2,
       'circle-stroke-width': 0.1,
       'circle-opacity': 0.2
