@@ -7,7 +7,8 @@ import {
   FetchApisModule,
   createLayerGeoData,
   flyMeToLocation,
-  searchMyLocationOnMap
+  searchMyLocationOnMap,
+  divOnclick
 } from './utils.js';
 import {
   store
@@ -21,8 +22,25 @@ export const loadMain = function(myMap) {
         totalCount,
         cordinatesMapping
       } = plotPinsOnMap(myMap, json);
+      loadQuickJump(myMap);
       circleLayer(myMap, json, maxcount);
     })
+}
+
+var loadQuickJump = function(myMap) {
+  const leftPanel = true;
+  let quickJumpComponent = document.getElementById('quickJump');
+  quickJump.innerHTML = "";
+  Object.keys(store.cordinatesMapping).map(country => {
+    const newOptionDiv = document.createElement('div');
+    newOptionDiv.classList.add('country');
+    const newTextNode = document.createTextNode(country);
+    newOptionDiv.appendChild(newTextNode);
+    quickJumpComponent.appendChild(newOptionDiv);
+    ((country) => {
+      newOptionDiv.onclick = divOnclick.bind(this, country, myMap, 'd', leftPanel);
+    })(country);
+  })
 }
 
 var plotPinsOnMap = function(map, json) {
@@ -52,25 +70,25 @@ var plotPinsOnMap = function(map, json) {
       color: color,
     }
 
-      var m = new mapboxgl.Marker(options)
-        .setLngLat([data[i].longitude, data[i].latitude])
-        .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % of world wide cases</span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
+    var m = new mapboxgl.Marker(options)
+      .setLngLat([data[i].longitude, data[i].latitude])
+      .setPopup(new mapboxgl.Popup().setHTML(`<div class="tooltip-${colorName}"><strong><span class="push-5-l push-5">${data[i].location}</span></strong> <br> <span class="push-5-l push-5">Cases ${percentage.toFixed(2)} % of world wide cases</span><br> <span class="push-5-l push-5"> Confirmed: ${data[i].confirmed} </span> <br><span class="push-5-l push-5"> Deaths: ${data[i].dead} </span><br> <span class="push-5-l push-5"> Recovered: ${data[i].recovered}</span></div>`))
 
-      if ((data[i].location).toLowerCase() !== "togo") {
-        m.addTo(map); /* api have wrong location for togo */
-        store.pins[(data[i].location).toLowerCase()] = m;
-      }
+    if ((data[i].location).toLowerCase() !== "togo") {
+      m.addTo(map); /* api have wrong location for togo */
+      store.pins[(data[i].location).toLowerCase()] = m;
+    }
 
 
-      (function(marketElement) {
-        marketElement.getElement().addEventListener('mouseenter', () => {
-          marketElement.togglePopup()
-        })
+    (function(marketElement) {
+      marketElement.getElement().addEventListener('mouseenter', () => {
+        marketElement.togglePopup()
+      })
 
-        marketElement.getElement().addEventListener('mouseleave', () => {
-          marketElement.togglePopup()
-        })
-      })(m);
+      marketElement.getElement().addEventListener('mouseleave', () => {
+        marketElement.togglePopup()
+      })
+    })(m);
 
   }
 
@@ -138,7 +156,7 @@ export const initMaps = function() {
   });
 
   var nav = new mapboxgl.NavigationControl();
-  map.addControl(nav, 'top-left');
+  map.addControl(nav, 'top-right');
 
   return map;
 }

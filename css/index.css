@@ -54,7 +54,7 @@ body {
 .color_display_code {
   padding-left: 20px;
   padding-top: 20px;
-  width: 200px;
+  width: 217px;
   height: 160px;
   position: absolute;
   right: 0;
@@ -110,27 +110,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* .my_input {
-  position: absolute;
-  z-index: 1;
-  margin-left: 100px;
-  margin-right: 20px;
-  margin-top: 2px;
-  padding: 20px;
-  width: 245px;
-  height: 5px;
-  border-radius: 20px;
-  background-color: #9a9a9;
-  transition: width 1s ease-in-out;
-  outline: none;
-}
-
-.my_input:focus {
-  width: 500px;
-  transition: width 1s ease-in-out;
-  outline: none;
-} */
-
 .my_input {
   padding: 20px;
   width: 245px;
@@ -155,6 +134,7 @@ body {
   flex-direction: column;
   color: black;
   padding-left: 40px;
+  cursor: grab;
 }
 
 .country_search_combo .flex-dropdown .countryDropdown {
@@ -168,4 +148,28 @@ body {
 
 .countryDropdown .country, .my_input {
   text-transform: capitalize;
+}
+
+.quick_jump {
+  padding-left: 10px;
+  position: absolute;
+  top: 10px;
+  color: white;
+  z-index: 1;
+  max-height: 95vh;
+  overflow-y: scroll;
+}
+
+.quick_jump .country {
+  margin-bottom: 5px;
+  text-transform: capitalize;
+  opacity: 0.3
+}
+
+.quick_jump .country:hover {
+  opacity: 1;
+  font-size: 20px;
+  transition-delay: 0.2s ;
+  transition-property: size;
+  cursor: grab;
 }

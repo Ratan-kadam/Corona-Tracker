@@ -117,11 +117,15 @@ export const addEventListeners = function(myMap) {
 }
 
 
-var divOnclick = function(location, myMap) {
+export const divOnclick = function(location, myMap, d ,leftPanel) {
   let inputBox = document.getElementById('input_box')
   let datalistComponent = document.getElementById('dropdownBox');
   datalistComponent.innerHTML = ''; // selection done clearing out displays
-  inputBox.value  = location;
+  if (leftPanel) {
+    inputBox.value = "";
+  } else {
+    inputBox.value  = location;
+  }
   const targetLocationArray = store.cordinatesMapping[(location).toLowerCase()];
   const markerRetrived = store.pins[(location).toLowerCase()];
   if (targetLocationArray) {
