@@ -100,13 +100,56 @@ export const debounce = function(fn, delay) {
   }
 }
 
+export const flyMeToLocation = function (location, myMap) {
+  const targetLocationArray = store.cordinatesMapping[location.toLowerCase()];
+  const markerRetrived = store.pins[(location).toLowerCase()];
+  if (targetLocationArray) {
+    searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
+  }
+}
+
 export const addEventListeners = function(myMap) {
   const myinput = document.getElementById('input_box');
   myinput.addEventListener('keyup', debounce((e) => {
-    const targetLocationArray = store.cordinatesMapping[(e.target.value).toLowerCase()];
-    const markerRetrived = store.pins[(e.target.value).toLowerCase()];
-    if (targetLocationArray) {
-      searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
-    }
-  }, 2000));
+    populateDatalistOptions(e.target.value, myMap);
+    flyMeToLocation(e.target.value, myMap);
+  }, 500));
+}
+
+
+var divOnclick = function(location, myMap) {
+  let inputBox = document.getElementById('input_box')
+  let datalistComponent = document.getElementById('dropdownBox');
+  datalistComponent.innerHTML = ''; // selection done clearing out displays
+  inputBox.value  = location;
+  const targetLocationArray = store.cordinatesMapping[(location).toLowerCase()];
+  const markerRetrived = store.pins[(location).toLowerCase()];
+  if (targetLocationArray) {
+    searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
+  }
+}
+
+var populateDatalistOptions = function (inputString, map) {
+  let datalistComponent = document.getElementById('dropdownBox');
+  datalistComponent.innerHTML = ''; // clearing out the old list
+  if (!inputString) {
+    return;
+  }
+  const regex = new RegExp(`^${inputString}`, 'ig');
+  const fitlteredArray = Object.keys(store.cordinatesMapping).filter(country => {
+    return country.match(regex);
+  });
+
+  if (fitlteredArray.length == 1 && inputString == fitlteredArray[0]) {
+    return;
+  }
+
+  for (var i=0; i < fitlteredArray.length; i++) {
+    const newOptionDiv = document.createElement('div');
+    newOptionDiv.classList.add('country');
+      const newTextNode = document.createTextNode(fitlteredArray[i]);
+      newOptionDiv.appendChild(newTextNode);
+      datalistComponent.appendChild(newOptionDiv);
+      newOptionDiv.onclick = divOnclick.bind(this, fitlteredArray[i], map);
+  }
 }

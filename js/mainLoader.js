@@ -6,6 +6,8 @@ import {
 import {
   FetchApisModule,
   createLayerGeoData,
+  flyMeToLocation,
+  searchMyLocationOnMap
 } from './utils.js';
 import {
   store
@@ -22,7 +24,6 @@ export const loadMain = function(myMap) {
       circleLayer(myMap, json, maxcount);
     })
 }
-
 
 var plotPinsOnMap = function(map, json) {
   const {

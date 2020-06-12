@@ -12,25 +12,31 @@
 </head>
 
 <body>
-<input id="input_box" class="my_input" placeholder="Type in your country" />
-<div class="color_display_code">
-  <div class="flex">
-    <div class="green__box"></div> Low fatality rate.
+  <div class="country_search_combo">
+    <div class="flex-dropdown">
+      <input id="input_box" list="myDatalistId" class="my_input" placeholder="Type in your country" />
+      <div id="dropdownBox" class="countryDropdown">
+      </div>
+    </div>
   </div>
-  <div class="flex">
-    <div class="yellow__box"></div> Moderate fatality rate.
+  <div class="color_display_code">
+    <div class="flex">
+      <div class="green__box"></div> Low fatality rate.
+    </div>
+    <div class="flex">
+      <div class="yellow__box"></div> Moderate fatality rate.
+    </div>
+    <div class="flex">
+      <div class="red__box"></div> High fatality rate.
+    </div>
+    <div class="flex">
+      <div class="marker__box"></div> Country.
+    </div>
+    <div class="flex">
+      <div class="circle"></div> Area.
+    </div>
   </div>
-  <div class="flex">
-    <div class="red__box"></div>  High fatality rate.
-  </div>
-  <div class="flex">
-    <div class="marker__box"></div> Country.
-  </div>
-  <div class="flex">
-    <div class="circle"></div> Area.
-  </div>
-</div>
-<div id='map' class='my__map'></div>
+  <div id='map' class='my__map'></div>
 </body>
 
 </html>

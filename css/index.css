@@ -51,27 +51,6 @@ body {
   margin-left: 5px;
 }
 
-.my_input {
-  position: absolute;
-  z-index: 1;
-  margin-left: 100px;
-  margin-right: 20px;
-  margin-top: 2px;
-  padding: 20px;
-  width: 245px;
-  height: 5px;
-  border-radius: 20px;
-  background-color: #9a9a9;
-  transition: width 1s ease-in-out;
-  outline: none;
-}
-
-.my_input:focus {
-  width: 500px;
-  transition: width 1s ease-in-out;
-  outline: none;
-}
-
 .color_display_code {
   padding-left: 20px;
   padding-top: 20px;
@@ -87,7 +66,6 @@ body {
 .color_display_code:hover {
   background-color: rgba(27, 27, 27, 0.7);
 }
-
 
 .color_display_code .green__box {
   width: 20px;
@@ -130,4 +108,63 @@ body {
   display: flex;
   flex-direction: row;
   margin-bottom: 10px;
+}
+
+/* .my_input {
+  position: absolute;
+  z-index: 1;
+  margin-left: 100px;
+  margin-right: 20px;
+  margin-top: 2px;
+  padding: 20px;
+  width: 245px;
+  height: 5px;
+  border-radius: 20px;
+  background-color: #9a9a9;
+  transition: width 1s ease-in-out;
+  outline: none;
+}
+
+.my_input:focus {
+  width: 500px;
+  transition: width 1s ease-in-out;
+  outline: none;
+} */
+
+.my_input {
+  padding: 20px;
+  width: 245px;
+  height: 5px;
+  border-radius: 20px;
+  background-color: #9a9a9;
+  outline: none;
+}
+
+.country_search_combo {
+  position: absolute;
+  margin-left: 20%;
+  width: 245px;
+  height: 15px;
+  outline: none;
+  z-index: 1;
+}
+
+.country_search_combo .flex-dropdown {
+  display: flex;
+  flex-direction: column;
+  color: black;
+  padding-left: 40px;
+}
+
+.country_search_combo .flex-dropdown .countryDropdown {
+  max-height: 200px;
+  overflow-y: scroll;
+  font-size: 20px;
+  width: 255px;
+  color: var(--tooltip-white);
+  margin-left: 17px
+}
+
+.countryDropdown .country, .my_input {
+  text-transform: capitalize;
 }
