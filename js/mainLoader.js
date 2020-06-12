@@ -31,7 +31,8 @@ var loadQuickJump = function(myMap) {
   const leftPanel = true;
   let quickJumpComponent = document.getElementById('quickJump');
   quickJump.innerHTML = "";
-  Object.keys(store.cordinatesMapping).map(country => {
+  const countries = Object.keys(store.cordinatesMapping).sort();
+  countries.map(country => {
     const newOptionDiv = document.createElement('div');
     newOptionDiv.classList.add('country');
     const newTextNode = document.createTextNode(country);
