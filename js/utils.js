@@ -117,7 +117,7 @@ export const addEventListeners = function(myMap) {
 }
 
 
-export const divOnclick = function(location, myMap, d ,leftPanel) {
+export const divOnclick = function(location, myMap, d ,leftPanel, zoom) {
   let inputBox = document.getElementById('input_box')
   let datalistComponent = document.getElementById('dropdownBox');
   datalistComponent.innerHTML = ''; // selection done clearing out displays
@@ -129,7 +129,7 @@ export const divOnclick = function(location, myMap, d ,leftPanel) {
   const targetLocationArray = store.cordinatesMapping[(location).toLowerCase()];
   const markerRetrived = store.pins[(location).toLowerCase()];
   if (targetLocationArray) {
-    searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
+    searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived, zoom);
   }
 }
 

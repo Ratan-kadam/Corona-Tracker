@@ -39,7 +39,7 @@ var loadQuickJump = function(myMap) {
     newOptionDiv.appendChild(newTextNode);
     quickJumpComponent.appendChild(newOptionDiv);
     ((country) => {
-      newOptionDiv.onclick = divOnclick.bind(this, country, myMap, 'd', leftPanel);
+      newOptionDiv.onclick = divOnclick.bind(this, country, myMap, 'd', leftPanel, 3);
     })(country);
   })
 }
