@@ -5,16 +5,20 @@ import {
 } from './constants.js';
 import {
   FetchApisModule,
+  removeLoader
 } from './utils.js';
 import {
   INDIA_STATES_CORDINATES
 } from './static_data/static_data.js';
 
-export const loadIndiaStats = function(myMap) {
+export const loadIndiaStats = function(myMap, spinnerComponent) {
   FetchApisModule().fetchApi(API.INDIA_DATA, 'usa_states')
     .then(json => {
       circleLayerIndia(myMap, json);
       circleLayerPopupIndia(myMap);
+      setTimeout(() => {
+        removeLoader();
+      }, 5000);
     })
 }
 

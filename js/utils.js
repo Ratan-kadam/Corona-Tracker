@@ -1,5 +1,9 @@
 import { store } from './store.js';
 
+/* global */
+let spinnerComponent = document.getElementById('spinnerId');
+let loaderMessageComponent = document.getElementById('loader_message');
+
 export function FetchApisModule(moduleName) {
   var name = moduleName || 'myModule';
 
@@ -84,7 +88,8 @@ export const searchMyLocationOnMap = function(targetLocation, map, marker, zoom)
   if (marker && marker.togglePopup) {
     setTimeout(() => {
       marker.togglePopup();
-    }, 2000)
+      removeLoader();
+    }, 1000)
   }
 }
 
@@ -104,6 +109,7 @@ export const flyMeToLocation = function (location, myMap) {
   const targetLocationArray = store.cordinatesMapping[location.toLowerCase()];
   const markerRetrived = store.pins[(location).toLowerCase()];
   if (targetLocationArray) {
+    showLoader(`Loading ${location}`);
     searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
   }
 }
@@ -118,6 +124,7 @@ export const addEventListeners = function(myMap) {
 
 
 export const divOnclick = function(location, myMap, d ,leftPanel, zoom) {
+  showLoader(`locating ${location}`);
   let inputBox = document.getElementById('input_box')
   let datalistComponent = document.getElementById('dropdownBox');
   datalistComponent.innerHTML = ''; // selection done clearing out displays
@@ -156,4 +163,14 @@ var populateDatalistOptions = function (inputString, map) {
       datalistComponent.appendChild(newOptionDiv);
       newOptionDiv.onclick = divOnclick.bind(this, fitlteredArray[i], map);
   }
+}
+
+export const showLoader = function (messages) {
+  spinnerComponent.classList.add('spinner');
+  loaderMessageComponent.innerHTML = messages;
+}
+
+export const removeLoader = function () {
+  spinnerComponent.classList.remove('spinner');
+  loaderMessageComponent.innerHTML = '';
 }

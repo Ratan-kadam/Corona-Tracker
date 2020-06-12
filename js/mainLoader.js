@@ -8,7 +8,8 @@ import {
   createLayerGeoData,
   flyMeToLocation,
   searchMyLocationOnMap,
-  divOnclick
+  divOnclick,
+  showLoader
 } from './utils.js';
 import {
   store

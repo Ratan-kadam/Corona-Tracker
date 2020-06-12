@@ -2,7 +2,8 @@ import {
   FetchApisModule,
   searchMyLocationOnMap,
   debounce,
-  addEventListeners
+  addEventListeners,
+  showLoader
 } from './utils.js';
 import {
   API,
@@ -30,6 +31,7 @@ import {
 } from './loadUsaStats.js';
 
 document.addEventListener("DOMContentLoaded", function() {
+  showLoader('Loading');
   const myMap = initMaps();
   selfLocate.bind(this);
   myMap.on('load', function() {
