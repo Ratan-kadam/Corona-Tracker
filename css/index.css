@@ -142,7 +142,8 @@ body {
 
 .country_search_combo {
   position: absolute;
-  margin-left: 20%;
+  margin-top: 10px;
+  margin-left: 10%;
   width: 245px;
   height: 15px;
   outline: none;
