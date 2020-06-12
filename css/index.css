@@ -204,3 +204,7 @@ body {
   color: var(--tooltip-white);
   opacity: 0.8;
 }
+
+.loading_country {
+  text-transform: capitalize;
+}

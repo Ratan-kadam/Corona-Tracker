@@ -31,7 +31,7 @@ import {
 } from './loadUsaStats.js';
 
 document.addEventListener("DOMContentLoaded", function() {
-  showLoader('Loading');
+  showLoader('world Corona statistics');
   const myMap = initMaps();
   selfLocate.bind(this);
   myMap.on('load', function() {

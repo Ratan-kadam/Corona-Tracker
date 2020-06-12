@@ -89,7 +89,7 @@ export const searchMyLocationOnMap = function(targetLocation, map, marker, zoom)
     setTimeout(() => {
       marker.togglePopup();
       removeLoader();
-    }, 1000)
+    }, 1500)
   }
 }
 
@@ -109,7 +109,7 @@ export const flyMeToLocation = function (location, myMap) {
   const targetLocationArray = store.cordinatesMapping[location.toLowerCase()];
   const markerRetrived = store.pins[(location).toLowerCase()];
   if (targetLocationArray) {
-    showLoader(`Loading ${location}`);
+    showLoader(location);
     searchMyLocationOnMap(targetLocationArray, myMap, markerRetrived);
   }
 }
@@ -124,7 +124,7 @@ export const addEventListeners = function(myMap) {
 
 
 export const divOnclick = function(location, myMap, d ,leftPanel, zoom) {
-  showLoader(`locating ${location}`);
+  showLoader(location);
   let inputBox = document.getElementById('input_box')
   let datalistComponent = document.getElementById('dropdownBox');
   datalistComponent.innerHTML = ''; // selection done clearing out displays
@@ -166,8 +166,9 @@ var populateDatalistOptions = function (inputString, map) {
 }
 
 export const showLoader = function (messages) {
+  const message = `Loading <span class="loading_country">${messages}</span>`
   spinnerComponent.classList.add('spinner');
-  loaderMessageComponent.innerHTML = messages;
+  loaderMessageComponent.innerHTML = message;
 }
 
 export const removeLoader = function () {
