@@ -19,6 +19,20 @@ import {
 } from '../sample_data/countryapi.js';
 
 export const loadMain = function(myMap) {
+  plotPinsOnMap(myMap);
+}
+
+var plotPinsOnMap = function(map) {
+  console.log("****", store);
+  const { liveData } = store || {};
+
+}
+
+
+
+
+
+export const loadMain1 = function(myMap) {
   FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
     .then(json => {
       const {
@@ -29,6 +43,51 @@ export const loadMain = function(myMap) {
       loadQuickJump(myMap);
       circleLayer(myMap, json, maxcount);
     })
+}
+
+
+export const loadLiveDataAndMapCordinates = function() {
+  // only taking cordinate from sample data country
+  const sampleData = country.data;
+  for (var i = 0; i < sampleData.length; i++) {
+    store.liveData[sampleData[i].location.toLowerCase()] = {
+      location: (sampleData[i].location).toLowerCase(),
+      country_code: sampleData[i].country_code,
+      latitude: sampleData[i].latitude,
+      longitude: sampleData[i].longitude,
+      confirmed: sampleData[i].confirmed
+    }
+  }
+
+  FetchApisModule().fetchApi(API.SUMMARY, 'liveData')
+    .then(json => {
+      const {
+        Countries
+      } = json || {};
+      mapDataToCordinates(Countries);
+    })
+
+  function mapDataToCordinates(countries) {
+    if (!countries) {
+       store.liveData = sampleData; // fall back mechanism to load static data
+    }
+
+    let maxCount = 0;
+
+    for (var i = 0; i < countries.length; i++) {
+      const currentCountryName = countries[i].Country.toLowerCase();
+      maxCount = maxCount + countries[i].TotalConfirmed;
+      store.liveData[currentCountryName] = {
+        ...store.liveData[currentCountryName],
+        confirmed: countries[i].TotalConfirmed,
+        dead: countries[i].TotalDeaths,
+        recovered: countries[i].TotalRecovered,
+        Date: countries[i].Date,
+        CountryCode: countries[i].CountryCode
+      }
+    }
+    store['totalCases'] = maxCount;
+  }
 }
 
 var loadQuickJump = function(myMap) {
@@ -48,7 +107,7 @@ var loadQuickJump = function(myMap) {
   })
 }
 
-var plotPinsOnMap = function(map, json) {
+var plotPinsOnMap1 = function(map, json) {
   let {
     data
   } = json || {};

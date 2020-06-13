@@ -21,7 +21,8 @@ import {
 } from './selfLocate.js';
 import {
   loadMain,
-  initMaps
+  initMaps,
+  loadLiveDataAndMapCordinates
 } from './mainLoader.js';
 import {
   loadIndiaStats
@@ -36,9 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
   selfLocate.bind(this);
   myMap.on('load', function() {
     addEventListeners(myMap, store.cordinatesMapping);
+    loadLiveDataAndMapCordinates(myMap);
     selfLocate(myMap);
     loadMain(myMap);
-    loadUsaStats(myMap);
-    loadIndiaStats(myMap);
+    // loadUsaStats(myMap);
+    // loadIndiaStats(myMap);
   });
 })
