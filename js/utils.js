@@ -72,7 +72,7 @@ export const createLayerGeoData = function(json, maxcount) {
 export const searchMyLocationOnMap = function(targetLocation, map, marker, zoom) {
   map.flyTo({
     center: targetLocation,
-    zoom: zoom || 5,
+    zoom: zoom || 4,
     bearing: 0,
 
     speed: 0.7,

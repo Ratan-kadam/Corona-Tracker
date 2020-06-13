@@ -154,6 +154,7 @@ export const initMaps = function() {
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v10',
     pitch: 0,
+    maxZoom: 4,
     zoom: 3,
   });
 
