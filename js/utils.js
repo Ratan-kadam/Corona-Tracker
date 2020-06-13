@@ -174,7 +174,7 @@ var populateDatalistOptions = function (inputString, map) {
 }
 
 export const showLoader = function (messages) {
-  const message = `Loading <span class="loading_country">${messages}</span>`
+  const message = `Locating <span class="loading_country">${messages}</span>`
   spinnerComponent.classList.add('spinner');
   loaderMessageComponent.innerHTML = message;
 }
