@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function() {
     addEventListeners(myMap, store.cordinatesMapping);
     selfLocate(myMap);
     loadMain(myMap);
-
     loadUsaStats(myMap);
     loadIndiaStats(myMap);
   });

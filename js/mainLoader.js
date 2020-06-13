@@ -14,6 +14,9 @@ import {
 import {
   store
 } from './store.js';
+import {
+  country
+} from '../sample_data/countryapi.js';
 
 export const loadMain = function(myMap) {
   FetchApisModule().fetchApi(API.LIVE_DATA, 'liveData')
@@ -46,12 +49,17 @@ var loadQuickJump = function(myMap) {
 }
 
 var plotPinsOnMap = function(map, json) {
-  const {
+  let {
     data
   } = json || {};
   let maxcount = 0;
   let totalCount = 0;
   const cordinatesMapping = {};
+
+  if (!data) {
+    data = country.data; //fallback in case of error
+  }
+
 
   for (var i = 0; i < data.length; i++) {
     if (data[i].confirmed > maxcount) {
