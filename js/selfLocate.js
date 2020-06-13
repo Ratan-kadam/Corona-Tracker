@@ -26,11 +26,20 @@ var getLocation = function(myMap, myLocationMarker) {
     var crd = pos.coords;
     myLocationMarker.setLngLat([crd.longitude, crd.latitude])
     myLocationMarker.addTo(myMap);
+    myLocationMarker.setPopup(new mapboxgl.Popup().setHTML(`<div class="myLocation"> You are here. </div>`));
     searchMyLocationOnMap([crd.longitude, crd.latitude], myMap, '', 3);
+    myLocationMarker.togglePopup();
+    myLocationMarker.getElement().addEventListener('mouseenter', () => {
+      myLocationMarker.togglePopup();
+    });
+    myLocationMarker.getElement().addEventListener('mouseleave', () => {
+      myLocationMarker.togglePopup();
+    })
   }
 
   function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
+    searchMyLocationOnMap([-95.712891, 37.09024], myMap, '', 3);
   }
 
   function drawMyLocation(myMap) {

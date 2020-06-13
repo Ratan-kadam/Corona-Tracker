@@ -213,3 +213,9 @@ body {
   font-size: 15px;
   color: var(--tooltip-red);
 }
+
+.myLocation {
+  font-size: 20px;
+  width: 100px;
+  background-color: var(--tooltip-white: #f9f9f9);
+}
