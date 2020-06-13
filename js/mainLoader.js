@@ -9,7 +9,8 @@ import {
   flyMeToLocation,
   searchMyLocationOnMap,
   divOnclick,
-  showLoader
+  showLoader,
+  showError
 } from './utils.js';
 import {
   store
@@ -46,12 +47,16 @@ var loadQuickJump = function(myMap) {
 }
 
 var plotPinsOnMap = function(map, json) {
-  const {
+  let {
     data
   } = json || {};
   let maxcount = 0;
   let totalCount = 0;
   const cordinatesMapping = {};
+
+  if (!data) {
+    showError();
+  }
 
   for (var i = 0; i < data.length; i++) {
     if (data[i].confirmed > maxcount) {
