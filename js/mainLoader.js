@@ -9,7 +9,9 @@ import {
   flyMeToLocation,
   searchMyLocationOnMap,
   divOnclick,
-  showLoader
+  showLoader,
+  showError,
+  clearError
 } from './utils.js';
 import {
   store
@@ -57,7 +59,12 @@ var plotPinsOnMap = function(map, json) {
   const cordinatesMapping = {};
 
   if (!data) {
+    showError(`Error while loading latest data.
+      <br>
+      Please clear browser cache and try again !!. `);
     data = country.data; //fallback in case of error
+  } else {
+    clearError();
   }
 
 
