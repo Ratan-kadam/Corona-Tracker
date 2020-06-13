@@ -76,10 +76,6 @@ var createIndiaCountyGeoData = function(json, statesCordinates) {
 
   const data = state;
 
-  if (!data) {
-    showError();
-  }
-
   obj.data = {};
   obj.data.type = 'FeatureCollection';
   obj.data.features = [];

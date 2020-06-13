@@ -4,8 +4,7 @@ import {
   COLORS_CSS_CLASS
 } from './constants.js';
 import {
-  FetchApisModule,
-  showError
+  FetchApisModule
 } from './utils.js';
 
 export const loadUsaStats = function(myMap) {
@@ -81,10 +80,6 @@ var createUsaCountyGeoData = function(json) {
   } = json || {};
   var obj = {};
   const data = message;
-
-  if (!data) {
-    showError();
-  }
 
   obj.data = {};
   obj.data.type = 'FeatureCollection';

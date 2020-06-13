@@ -1,8 +1,8 @@
 import { store } from './store.js';
 
+/* global */
 let spinnerComponent = document.getElementById('spinnerId');
 let loaderMessageComponent = document.getElementById('loader_message');
-let ErrorMessageComponent = document.getElementById('Error_Message');
 
 export function FetchApisModule(moduleName) {
   var name = moduleName || 'myModule';
@@ -174,9 +174,4 @@ export const showLoader = function (messages) {
 export const removeLoader = function () {
   spinnerComponent.classList.remove('spinner');
   loaderMessageComponent.innerHTML = '';
-}
-
-export const showError = function () {
-  const message = `Error found !! Please clear cache and try again.`;
-  ErrorMessageComponent.innerHTML = message ;
 }

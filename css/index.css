@@ -208,8 +208,3 @@ body {
 .loading_country {
   text-transform: capitalize;
 }
-
-.ErrorMessage {
-  font-size: 15px;
-  color: var(--tooltip-red);
-}
