@@ -1,4 +1,7 @@
 import { store } from './store.js';
+import {
+  country
+} from '../sample_data/countryapi.js';
 
 /* global */
 let spinnerComponent = document.getElementById('spinnerId');
@@ -26,9 +29,13 @@ export function FetchApisModule(moduleName) {
 
 
 export const createLayerGeoData = function(json, maxcount) {
-  const {
+  let {
     data
   } = json || {};
+
+  if (!data) {
+    data = country.data;
+  }
 
   let maxPercent = 0;
 
