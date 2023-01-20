@@ -164,7 +164,8 @@ var circleLayer = function(myMap, json, maxcount) {
 }
 
 export const initMaps = function() {
-  mapboxgl.accessToken = 'pk.eyJ1IjoicmF0YW5rYWRhbSIsImEiOiJja2IwNGpjNTAwNTI2MzBwbXZ0azhpeGN1In0.8MUvb6rac9jyNdwwt7064A';
+ // mapboxgl.accessToken = 'pk.eyJ1IjoicmF0YW5rYWRhbSIsImEiOiJja2IwNGpjNTAwNTI2MzBwbXZ0azhpeGN1In0.8MUvb6rac9jyNdwwt7064A';
+  mapboxgl.accessToken= 'pk.eyJ1IjoicmF0YW5rYWRhbSIsImEiOiJjbGQ0eGp5bjcwMGo2M3BtdjZqNml2dGhuIn0.tOAGq2lfb-6ACrkLJWxCUg'
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v10',
